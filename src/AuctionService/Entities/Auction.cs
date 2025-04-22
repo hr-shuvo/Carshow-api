@@ -1,3 +1,5 @@
+using AuctionService.Entities.Models;
+
 namespace AuctionService.Entities;
 
 public class Auction
