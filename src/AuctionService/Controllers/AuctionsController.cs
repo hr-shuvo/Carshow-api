@@ -62,5 +62,27 @@ public class AuctionsController : ControllerBase
         return CreatedAtAction(nameof(GetAuctionById), 
             new { id = auction.Id }, _mapper.Map<AuctionDto>(auction));
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateAuction(Guid id, AuctionUpdateDto auctionDto)
+    {
+        var auction = await _context.Auctions
+            .Include(auction => auction.Item)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        
+        if(auction == null) return NotFound();
+        
+        auction.Item.Make = auctionDto.Make ?? auction.Item.Make;
+        auction.Item.Model = auctionDto.Model ?? auction.Item.Model;
+        auction.Item.Color = auctionDto.Color ?? auction.Item.Color;
+        auction.Item.Mileage = auctionDto.Mileage ?? auction.Item.Mileage;
+        auction.Item.Year = auctionDto.Year ?? auction.Item.Year;
+        
+        var result = await _context.SaveChangesAsync() > 0;
+
+        if (result) return Ok();
+        
+        return BadRequest("Could not update the auction");
+    }
     
 }
