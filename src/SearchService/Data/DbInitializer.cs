@@ -12,6 +12,8 @@ public class DbInitializer
         var connectionString = app.Configuration.GetConnectionString("MongoDbConnection");
         await DB.InitAsync("SearchDb", MongoClientSettings.FromConnectionString(connectionString));
 
+        
+        
         await DB.Index<Item>()
             .Key(x => x.Make, KeyType.Text)
             .Key(x => x.Model, KeyType.Text)
