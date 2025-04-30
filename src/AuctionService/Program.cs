@@ -14,11 +14,21 @@ builder.Services.AddDbContext<AuctionDbContext>(opt =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddMassTransit(x => x.UsingRabbitMq((ctx, cfg) =>
+builder.Services.AddMassTransit(x =>
 {
-    // cfg.Host("rabbitmq");
-    cfg.ConfigureEndpoints(ctx);
-}));
+    x.AddEntityFrameworkOutbox<AuctionDbContext>(o =>
+    {
+        o.QueryDelay = TimeSpan.FromSeconds(10);
+        o.UsePostgres();
+        o.UseBusOutbox();
+    });
+    
+    x.UsingRabbitMq((ctx, cfg) =>
+    {
+        // cfg.Host("rabbitmq");
+        cfg.ConfigureEndpoints(ctx);
+    });
+});
 
 
 var app = builder.Build();
