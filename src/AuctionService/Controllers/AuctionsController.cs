@@ -34,13 +34,13 @@ public class AuctionsController : ControllerBase
         {
             query = query.Where(x => x.UpdatedAt.CompareTo(DateTime.Parse(date).ToUniversalTime()) > 0);
         }
-        
+
         // var auctions = await _context.Auctions.Include(x => x.Item)
         //     .OrderBy(x => x.Item.Make)
         //     .ToListAsync();
-        
+
         var dataToReturn = await query.ProjectTo<AuctionDto>(_mapper.ConfigurationProvider).ToListAsync();
-        
+
         return dataToReturn;
     }
 
@@ -50,33 +50,33 @@ public class AuctionsController : ControllerBase
         var auction = await _context.Auctions
             .Include(x => x.Item)
             .FirstOrDefaultAsync(x => x.Id == id);
-        
-        if(auction == null) return NotFound();
-        
+
+        if (auction == null) return NotFound();
+
         var dataToReturn = _mapper.Map<AuctionDto>(auction);
-        
+
         return dataToReturn;
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<List<AuctionDto>>> CreateAuction(AuctionCreateDto auctionDto)
     {
         var auction = _mapper.Map<Auction>(auctionDto);
-        
+
         // TODO: add current user as seller
         auction.Seller = "test";
-        
+
         _context.Auctions.Add(auction);
-        
+
         var newAuction = _mapper.Map<AuctionDto>(auction);
         await _publishEndpoint.Publish(_mapper.Map<AuctionCreated>(newAuction));
-        
+
         var result = await _context.SaveChangesAsync() > 0;
-        
-        
-        if(!result) return BadRequest("Could not save changes to the DB");
-        
-        return CreatedAtAction(nameof(GetAuctionById), 
+
+
+        if (!result) return BadRequest("Could not save changes to the DB");
+
+        return CreatedAtAction(nameof(GetAuctionById),
             new { id = auction.Id }, newAuction);
     }
 
@@ -86,9 +86,9 @@ public class AuctionsController : ControllerBase
         var auction = await _context.Auctions
             .Include(auction => auction.Item)
             .FirstOrDefaultAsync(x => x.Id == id);
-        
-        if(auction == null) return NotFound();
-        
+
+        if (auction == null) return NotFound();
+
         auction.Item.Make = auctionDto.Make ?? auction.Item.Make;
         auction.Item.Model = auctionDto.Model ?? auction.Item.Model;
         auction.Item.Color = auctionDto.Color ?? auction.Item.Color;
@@ -96,11 +96,11 @@ public class AuctionsController : ControllerBase
         auction.Item.Year = auctionDto.Year ?? auction.Item.Year;
 
         await _publishEndpoint.Publish(_mapper.Map<AuctionUpdated>(auction));
-        
+
         var result = await _context.SaveChangesAsync() > 0;
 
         if (result) return Ok();
-        
+
         return BadRequest("Could not update the auction");
     }
 
@@ -108,18 +108,19 @@ public class AuctionsController : ControllerBase
     public async Task<ActionResult> DeleteAuction(Guid id)
     {
         var auction = await _context.Auctions.FindAsync(id);
-        
-        if(auction == null) return NotFound();
-        
+
+        if (auction == null) return NotFound();
+
         //TODO - check seller == username
-        
+
         _context.Auctions.Remove(auction);
-        
+
+        await _publishEndpoint.Publish<AuctionDeleted>(new { Id = auction.Id.ToString() });
+
         var result = await _context.SaveChangesAsync() > 0;
-        
-        if(result) return Ok();
-        
+
+        if (result) return Ok();
+
         return BadRequest("Could not delete the auction");
     }
-    
 }
