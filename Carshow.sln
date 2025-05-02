@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchService", "src\Search
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "src\Contracts\Contracts.csproj", "{06E970E7-0840-4EC0-9A0F-CC71BFA7F506}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService", "src\IdentityService\IdentityService.csproj", "{EBDCDB2D-9C24-483D-B900-60677CFC3506}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{06E970E7-0840-4EC0-9A0F-CC71BFA7F506}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06E970E7-0840-4EC0-9A0F-CC71BFA7F506}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06E970E7-0840-4EC0-9A0F-CC71BFA7F506}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBDCDB2D-9C24-483D-B900-60677CFC3506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBDCDB2D-9C24-483D-B900-60677CFC3506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBDCDB2D-9C24-483D-B900-60677CFC3506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBDCDB2D-9C24-483D-B900-60677CFC3506}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
